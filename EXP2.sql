@@ -1,11 +1,11 @@
--- EXPERIMENT 3 - DEPARTMENT — EMPLOYEE RELATIONS 
+-- EXPERIMENT 2 - CUSTOMER-PRODUCT-PURCHASE RELATIONS
 
 -- NAME : MILAN GEORGE MATHEW
 -- ROLL NO : 39
--- DATE : 30/07/2022
+-- DATE : 23/07/2022
 
 -- AIM
--- WRITE QUERIES TO CREATE  AND RETRIEVE DEPARTMENT AND EMPLOYEE RELATIONS USING RELATIONSHIP CONSTRAINTS, INDICES, DDL &DML COMMANDS, VIEWS,  BUILT IN FUNCTIONS, SET OPERATIONS, AGGREGATE FUNCTIONS, GROUPING AND ORDERING CLAUSES
+-- WRITE QUERIES TO CREATE AND RETRIEVE CUSTOMER AND PRODUCT RELATIONSHIP, CONSTRAINTS, BUILT IN FUNCTIONS, GROUP BY, ORDER BY, VIEW DROP, DML COMMAND.
 ----------------------------------------------------------------
 
 ----------------------------------------------------------------
@@ -13,648 +13,414 @@
 
 -- CREATING TABLES
 
--- DEPARTMENT TABLE
-CREATE TABLE DEPARTMENT ( Dep_No INT PRIMARY KEY NOT NULL, Dep_Name VARCHAR2(15) NOT NULL, Loc VARCHAR2(15) NOT NULL, Mgr INT NOT NULL, Exp_Bdg INT NOT NULL, Rev_Bdg INT NOT NULL);
+-- PRODUCT TABLE
+CREATE TABLE PRODUCT (product_no VARCHAR(15) NOT NULL,description VARCHAR(20) NOT NULL,company VARCHAR(15) NOT NULL,price INT NOT NULL,PRIMARY KEY (product_no));
 
--- EMPLOYEE TABLE
-CREATE TABLE EMPLOYEE ( Empno INT PRIMARY KEY NOT NULL, Name VARCHAR2(15) NOT NULL, Job VARCHAR2(15) NOT NULL, Salary INT NOT NULL, Comm VARCHAR2(15), Dep_No INT, Sex VARCHAR2(6), FOREIGN KEY(Dep_No) REFERENCES Department(Dep_No));
+-- CUSTOMER TABLE
+CREATE TABLE CUSTOMER (cust_no VARCHAR(15) NOT NULL,name VARCHAR(30) NOT NULL,age INT NOT NULL,city VARCHAR(30) NOT NULL,pincode INT NOT NULL,state VARCHAR(15) NOT NULL,PRIMARY KEY (cust_no));
 
--- DEPENDANT TABLE
-CREATE TABLE DEPENDANT ( Pid INT PRIMARY KEY NOT NULL, Fname VARCHAR2(15) NOT NULL, Lname VARCHAR2(15) NOT NULL, Place VARCHAR2(15) NOT NULL, Empno INT, FOREIGN KEY(Empno) REFERENCES Employee(Empno));
+-- SUPPLIER TABLE
+CREATE TABLE SUPPLIER (s_no VARCHAR(10) NOT NULL,sname VARCHAR(30) NOT NULL,city VARCHAR(15) NOT NULL,PRIMARY KEY (s_no));
+
+-- PURCHASE TABLE
+CREATE TABLE PURCHASE (order_no VARCHAR(15) NOT NULL,custno VARCHAR(15) NOT NULL,prono VARCHAR(15) NOT NULL,quantity INT NOT NULL,orderdate DATE,PRIMARY KEY (order_no),FOREIGN KEY (custno) REFERENCES CUSTOMER(cust_no),FOREIGN KEY (prono) REFERENCES PRODUCT(product_no));
 
 
 --INSERTING VALUES
 
--- DEPARTMENT TABLE
-INSERT INTO DEPARTMENT VALUES (60, 'Shipping', 'Trivandrum', 215, 90000, 0);
-INSERT INTO DEPARTMENT VALUES (10, 'Accounting', 'Cochin', 200, 100000, 0);
-INSERT INTO DEPARTMENT VALUES (30, 'Research', 'Cochin', 105, 125000, 0);
-INSERT INTO DEPARTMENT VALUES (40, 'Sales', 'Trichur', 109, 280000, 8000);
-INSERT INTO DEPARTMENT VALUES (50, 'Manufacturing', 'Kottayam', 210, 130000, 0);
+--PRODUCT TABLE
+INSERT INTO PRODUCT VALUES ('P00001', '12 W Flood Light', 'Wipro', 5000);
+INSERT INTO PRODUCT VALUES('P00002', 'Laptop Adapter', 'Dell', 1560);
+INSERT INTO PRODUCT VALUES('P00003', 'Tablet', 'HCL', 11000);
+INSERT INTO PRODUCT VALUES('P00004', 'Garnet 50W led', 'Wipro', 999);
+INSERT INTO PRODUCT VALUES('P00005', 'Laptop Charger', 'HCL', 1690);
 
--- EMPLOYEE TABLE
-INSERT INTO EMPLOYEE (Empno, Name, Job, Salary, Dep_No, Sex) VALUES (100, 'Wilson', 'CLRK', 17000, 10, 'M'); 
-INSERT INTO EMPLOYEE (Empno, Name, Job, Salary, Dep_No, Sex) VALUES (101, 'Smitha', 'SLSM', 25000, 40, 'F'); 
-INSERT INTO EMPLOYEE (Empno, Name, Job, Salary, Dep_No, Sex) VALUES (103, 'Roy', 'ANLST', 35000, 30, 'M'); 
-INSERT INTO EMPLOYEE (Empno, Name, Job, Salary, Dep_No, Sex) VALUES (105, 'Watson', 'MNGR', 45000, 30, 'M'); 
-INSERT INTO EMPLOYEE (Empno, Name, Job, Salary, Dep_No, Sex) VALUES (109, 'Alan', 'MNGR', 30000, 40, 'M'); 
-INSERT INTO EMPLOYEE (Empno, Name, Job, Salary, Dep_No, Sex) VALUES (110, 'Tina', 'CLRK', 18000, 50, 'F'); 
-INSERT INTO EMPLOYEE (Empno, Name, Job, Salary, Dep_No, Sex) VALUES (200, 'Karthika', 'MNGR', 29000, 10, 'F'); 
-INSERT INTO EMPLOYEE (Empno, Name, Job, Salary, Dep_No, Sex) VALUES (210, 'Rita', 'MNGR', 36500, 50, 'F'); 
-INSERT INTO EMPLOYEE (Empno, Name, Job, Salary, Dep_No, Sex) VALUES (213, 'Manacy', 'CLRK', 16250, 10, 'F'); 
-INSERT INTO EMPLOYEE (Empno, Name, Job, Salary, Dep_No, Sex) VALUES (214, 'Simpson', 'DRVR', 8250, 60, 'M'); 
-INSERT INTO EMPLOYEE (Empno, Name, Job, Salary, Dep_No, Sex) VALUES (215, 'Deepa', 'ANLST', 27000, 60, 'F'); 
-INSERT INTO EMPLOYEE (Empno, Name, Job, Salary, Dep_No, Sex) VALUES (220, 'Soosan', 'SLSM', 28500, 60, 'F');
-
-UPDATE EMPLOYEE SET COMM = '1300' WHERE Empno = 101;
-UPDATE EMPLOYEE SET COMM = '0' WHERE Empno = 105;
-UPDATE EMPLOYEE SET COMM = '8000' WHERE Empno = 109;
-UPDATE EMPLOYEE SET COMM = '5300' WHERE Empno = 220;
+-- CUSTOMER TABLE
+INSERT INTO CUSTOMER VALUES ('C00001', 'Ivan Bayross', 35, 'Bombay', 400054, 'Maharashtra');
+INSERT INTO CUSTOMER VALUES('C00002', 'Vandana Saitwal', 35, 'Madras', 780001, 'Tamilnadu');
+INSERT INTO CUSTOMER VALUES('C00003', 'Pramada Jaguste', 55, 'Bombay', 400057, 'Maharashtra');
+INSERT INTO CUSTOMER VALUES('C00004', 'Basu Navindgi', 45, 'Bombay', 400056, 'Maharashtra');
+INSERT INTO CUSTOMER VALUES('C00005', 'Ravi Sreedharan', 25, 'Delhi', 100001, 'Delhi');
+INSERT INTO CUSTOMER VALUES('C00006', 'Rukmini', 25, 'Madras', 780001, 'Tamilnadu');
 
 
--- DEPENDANT TABLE
-INSERT INTO DEPENDANT VALUES (1010, 'Anu', 'Jose', 'Trivandrum', 214);
-INSERT INTO DEPENDANT VALUES (1020, 'Neenu', 'Thomas', 'Kollam', 200);
-INSERT INTO DEPENDANT VALUES (1022, 'AnamikA', 'Thampi', 'Kollam', 200);
-INSERT INTO DEPENDANT VALUES (1031, 'Swetha', 'Das', 'Kottayam', 109);
+-- SUPPLIER TABLE
+INSERT INTO SUPPLIER VALUES ('S001', 'Ivan Bayross', 'Bombay');
+INSERT INTO SUPPLIER VALUES('S002', 'Nirmala Agarwal', 'Madras');
+INSERT INTO SUPPLIER VALUES('C003', 'Susmitha', 'Bombay');
+INSERT INTO SUPPLIER VALUES('C004', 'Basu Navindgi', 'Bombay');    
+INSERT INTO SUPPLIER VALUES('C005', 'Ravi Sreedharan', 'Delhi');
+INSERT INTO SUPPLIER VALUES('C006', 'Nanda Gopal', 'Madras'); 
+
+-- PURCHASE TABLE
+INSERT INTO PURCHASE VALUES ('O00001', 'C00002', 'P00003', 2, '20-JAN-16');
+INSERT INTO PURCHASE VALUES('O00002', 'C00003', 'P00002', 1, '27-JAN-16');
+INSERT INTO PURCHASE VALUES('O00003', 'C00006', 'P00001', 3, '20-FEB-16');
+INSERT INTO PURCHASE VALUES('O00004', 'C00003', 'P00005', 4, '07-APR-16');
+INSERT INTO PURCHASE VALUES('O00005', 'C00004', 'P00002', 2, '22-MAY-16');
+INSERT INTO PURCHASE VALUES('O00006', 'C00005', 'P00004', 1, '26-MAY-16');
 
 
 -- -------------------------------
 -- QUERIES
 -- -------------------------------
 
-
--- 1.  RETURN DETAILS OF  ALL MANAGERS FROM  EMPLOYEE TABLE SORTED  ALPHABETICALLY BY NAME. 
+-- 1. LIST ALL CUSTOMERS IN MADRAS
 SELECT NAME 
-FROM EMPLOYEE 
-WHERE JOB = 'MNGR' 
-ORDER BY NAME ASC;
+FROM CUSTOMER 
+WHERE CITY='Madras';
 
 NAME
+------------------------------
+Vandana Saitwal
+Rukmini
+
+-- 2. LIST ALL CUSTOMER- NUMBERS OF ALL WHO PURCHASE THE PRODUCT IN THE MONTH OF JANUARY
+SELECT CUSTNO 
+FROM PURCHASE 
+WHERE ORDERDATE 
+LIKE '%-JAN-%';
+
+CUSTNO
 ---------------
-Alan
-Karthika
-Rita
-Watson
+C00002
+C00003
 
--- 2. RETURN DETAILS OF ALL EMPLOYEES IN DEPARTMENT 40 ORDERED BY EMPNO. 
-SELECT * 
-FROM EMPLOYEE 
-WHERE DEP_NO = 40 
-ORDER BY EMPNO ASC;
+-- 3. LIST ALL THE NAME OF COMPANY WHOSE PRICE IS GREATER THAN 5000 
+SELECT COMPANY 
+FROM PRODUCT 
+WHERE PRICE > 5000;
 
-     EMPNO NAME            JOB                 SALARY COMM                DEP_NO
----------- --------------- --------------- ---------- --------------- ----------
-SEX
-------
-       101 Smitha          SLSM                 25000 1300                    40
-F
+COMPANY
+---------------
+HCL
 
-       109 Alan            MNGR                 30000 8000                    40
-M
+-- 4. LIST ALL THE CUSTOMERS WHOSE NAME IS NOT BEGINNING WITH ‘R’
+SELECT NAME 
+FROM CUSTOMER 
+WHERE NAME NOT LIKE 'R%';
 
+NAME
+------------------------------
+Ivan Bayross
+Vandana Saitwal
+Pramada Jaguste
+Basu Navindgi
 
--- 3. RETURN INFORMATION ABOUT ALL FEMALE EMPLOYEE ORDERED BY NAME.
-SELECT * 
-FROM EMPLOYEE 
-WHERE SEX = 'F' 
-ORDER BY NAME ASC;
+-- 5. ADD EMAIL FIELD INTO THE CUSTOMER TABLE
+ALTER TABLE CUSTOMER 
+ADD (EMAIL_ID VARCHAR(20));
 
-     EMPNO NAME            JOB                 SALARY COMM                DEP_NO
----------- --------------- --------------- ---------- --------------- ----------
-SEX
-------
-       215 Deepa           ANLST                27000                         60
-F
+Table altered.
 
-       200 Karthika        MNGR                 29000                         10
-F
+-- 6. LIST ALL THE CUSTOMERS WHOSE AGE IS GREATER THAN 40 IN MAHARASHTRA
+SELECT NAME 
+FROM CUSTOMER 
+WHERE AGE>40;
 
-       213 Manacy          CLRK                 16250                         10
-F
+NAME
+------------------------------
+Pramada Jaguste
+Basu Navindgi
 
+-- 7. DISPLAY THE COMPANY’S NAME IN THE INCREASING ORDER OF PRICE
+SELECT COMPANY 
+FROM PRODUCT 
+ORDER BY PRICE;
 
-     EMPNO NAME            JOB                 SALARY COMM                DEP_NO
----------- --------------- --------------- ---------- --------------- ----------
-SEX
-------
-       210 Rita            MNGR                 36500                         50
-F
+COMPANY
+---------------
+Wipro
+Dell
+HCL
+Wipro
+HCL
 
-       101 Smitha          SLSM                 25000 1300                    40
-F
+-- 8. CALCULATE AVERAGE AGE OF CUSTOMERS FROM TABLE CUSTOMER. 
+SELECT AVG(AGE) 
+FROM CUSTOMER;
 
-       220 Soosan          SLSM                 28500 5300                    60
-F
-
-
-     EMPNO NAME            JOB                 SALARY COMM                DEP_NO
----------- --------------- --------------- ---------- --------------- ----------
-SEX
-------
-       110 Tina            CLRK                 18000                         50
-F
-
-
-7 rows selected.
-
--- 4. FIND MAXIMUM AND MINIMUM  COMMISSION PAID(COMM),TOTAL  COMMISSION  PAID AND COUNT OF EMPLOYEES WHO WERE PAID WITH COMMISSION. 
-SELECT MAX(COMM) , MIN(COMM) , SUM(COMM) , COUNT(*) 
-FROM EMPLOYEE 
-WHERE COMM > 0;
-
-MAX(COMM)       MIN(COMM)        SUM(COMM)   COUNT(*)
---------------- --------------- ---------- ----------
-8000            1300                 14600          3
-
--- 5. NUMBER OF  EMPLOYEES  LISTED IN EACH JOB.
-SELECT JOB , COUNT(*) 
-FROM EMPLOYEE 
-GROUP BY JOB;
-
-JOB               COUNT(*)
---------------- ----------
-CLRK                     3
-SLSM                     2
-ANLST                    2
-MNGR                     4
-DRVR                     1
-
--- 6. TOTAL SALARY  PAID TO EACH JOB IN THE CATEGORY.
-SELECT JOB , SUM(SALARY) 
-FROM EMPLOYEE 
-GROUP BY JOB;
-
-JOB             SUM(SALARY)
---------------- -----------
-CLRK                  51250
-SLSM                  53500
-ANLST                 62000
-MNGR                 140500
-DRVR                   8250
-
--- 7. RETURN ALL DEPT_NOS IN EMPLOYEE TABLE(ENSURE THAT EACH DEPT_ÑO APPEARS ONLY ONCE).
-SELECT DISTINCT DEP_NO 
-FROM EMPLOYEE;
-
-    DEP_NO
+  AVG(AGE)
 ----------
-        10
-        40
-        30
-        50
-        60
+36.6666667
 
+-- 9. LIST CITIES OF CUSTOMERS FROM STATES MAHARASHTRA & TAMIL NADU
+SELECT CITY 
+FROM CUSTOMER 
+WHERE STATE = 'Maharashtra' 
+OR STATE = 'Tamilnadu';
 
--- 8. RETURN EMPNO,NAME AND SALARY OF FEMALES IN DEPARTMENT 10.
-SELECT EMPNO , NAME , SALARY 
-FROM EMPLOYEE 
-WHERE DEP_NO = 10 
-AND SEX = 'F';
+CITY
+------------------------------
+Bombay
+Madras
+Bombay
+Bombay
+Madras
 
-     EMPNO NAME                SALARY
----------- --------------- ----------
-       200 Karthika             29000
-       213 Manacy               16250
+-- 10. FIND AVERAGE PRICE FROM TABLE PRODUCT. 
+SELECT AVG(PRICE) 
+FROM PRODUCT;
 
+AVG(PRICE)
+----------
+    4049.8
 
--- 9. RETURN NAME AND JOB OF ALL FEMALE  SALES MAN AND MANAGERS.
-SELECT NAME , JOB 
-FROM EMPLOYEE 
-WHERE JOB IN ('SLSM','MNGR') 
-AND SEX = 'F';
+-- 11. LIST ALL CUSTOMER NOS IN THE INCREASING ORDER OF QUANTITY FROM TABLE PURCHASE
+SELECT CUSTNO 
+FROM PURCHASE 
+ORDER BY CUSTNO;
 
-NAME            JOB
---------------- ---------------
-Smitha          SLSM
-Karthika        MNGR
-Rita            MNGR
-Soosan          SLSM
+CUSTNO
+---------------
+C00002
+C00003
+C00003
+C00004
+C00005
+C00006
 
+6 rows selected.
 
--- 10. DISPLAY EMPNO AND NAME OF EMPLOYEES IN EMPLOYEE TABLE WHO ARE A EITHER MANAGER OR A CLERK IN DEPARTMENT 50.
-SELECT EMPNO , NAME 
-FROM EMPLOYEE 
-WHERE DEP_NO = 50 
-AND JOB IN ('MNGR','CLRK');
+-- 12. UPDATE PRODUCT NUMBER OF CUSTOMER NUMBER C00003 TO P00008
+INSERT INTO PRODUCT VALUES('P00008','Mouse','Artic Fox','700');
 
-     EMPNO NAME
----------- ---------------
-       110 Tina
-       210 Rita
+1 row created.
 
--- 11. LIST THE NAME OF EMPLOYEE WHO ARE NEITHER A CLERK NOR A SALESMAN.
+UPDATE PURCHASE SET PRONO = 'P00008' WHERE CUSTNO = 'C00003';
+
+2 rows updated.
+
+-- 13. FIND THE NUMBER OF CUSTOMERS FROM CITY DELHI. 
+SELECT COUNT(CITY) 
+FROM CUSTOMER 
+WHERE CITY='Delhi';
+
+COUNT(CITY)
+-----------
+          1
+
+-- 14. LIST CUSTOMER NUMBER OF ALL CUSTOMERS WHO HAVE PURCHASED MORE THAN 3 ITEMS
+SELECT CUSTNO 
+FROM PURCHASE 
+WHERE QUANTITY>3;
+
+CUSTNO
+---------------
+C00003
+
+-- 15. MODIFY THE STRUCTURE OF ORDER DATE FIELD IN THE PURCHASE INTO CHARACTER. 
+UPDATE PURCHASE SET ORDERDATE = NULL;
+
+6 rows updated.
+
+ALTER TABLE PURCHASE 
+MODIFY ORDERDATE VARCHAR(10);
+
+Table altered.
+
+-- 16. FIND MIN AND MAX PRICE FROM PRODUCT TABLE. 
+SELECT MIN(PRICE),MAX(PRICE) 
+FROM PRODUCT;
+
+MIN(PRICE) MAX(PRICE)
+---------- ----------
+       700      11000
+
+-- 17. FIND NUMBER OF PRODUCTS BY WIPRO AND HCL SEPARATELY. 
+SELECT COMPANY,COUNT(*) 
+FROM PRODUCT 
+WHERE COMPANY = 'Wipro' 
+OR COMPANY ='HCL' 
+GROUP BY COMPANY;
+
+COMPANY           COUNT(*)
+--------------- ----------
+Wipro                    2
+HCL                      2
+
+-- 18. LIST ALL CUSTOMERS IN ALPHABETICAL ORDER. 
 SELECT NAME 
-FROM EMPLOYEE 
-WHERE JOB NOT IN ('CLRK','SLSM');
+FROM CUSTOMER 
+ORDER BY NAME;
 
 NAME
----------------
-Roy
-Watson
-Alan
-Karthika
-Rita
-Simpson
-Deepa
-
-7 rows selected.
-
--- 12. RETURN DETAILS OF ALL CLERKS WORKING IN DEPARTMENTS OTHER THAN DEPARTMENT 10.
-SELECT * 
-FROM EMPLOYEE 
-WHERE JOB = 'CLRK' 
-AND DEP_NO != 10;
-
-     EMPNO NAME            JOB                 SALARY COMM                DEP_NO
----------- --------------- --------------- ---------- --------------- ----------
-SEX
-------
-       110 Tina            CLRK                 18000                         50
-F
-
--- 13. FIND NAMES OF EMPLOYEES CONTAINING LETTERS U AND E.
-SELECT NAME 
-FROM EMPLOYEE 
-WHERE NAME LIKE '%U%E%' 
-OR NAME LIKE '%E%U%';
-
-no rows selected
-
-
--- 14. LIST ALL EMPLOYEE WHO EARNED COMMISSION.
-SELECT * 
-FROM EMPLOYEE 
-WHERE COMM != 0;
-
-     EMPNO NAME            JOB                 SALARY COMM                DEP_NO
----------- --------------- --------------- ---------- --------------- ----------
-SEX
-------
-       101 Smitha          SLSM                 25000 1300                    40
-F
-
-       109 Alan            MNGR                 30000 8000                    40
-M
-
-       220 Soosan          SLSM                 28500 5300                    60
-F
-
-
-
--- 15. FIND EMPNO ,NAME AND JOB OF ALL FEMALES WHO ARE NOT MANAGERS.
-SELECT EMPNO , NAME , JOB 
-FROM EMPLOYEE 
-WHERE SEX = 'F' 
-AND JOB != 'MNGR';
-
-     EMPNO NAME            JOB
----------- --------------- ---------------
-       101 Smitha          SLSM
-       110 Tina            CLRK
-       213 Manacy          CLRK
-       215 Deepa           ANLST
-       220 Soosan          SLSM
-
-
--- 16. FIND EMPNO,NAME AND SALARY OF ALL EMPLOYEES WHO EARN MORE THAN 10000 BUT LESS THAN 40000.
-SELECT EMPNO , NAME , SALARY 
-FROM EMPLOYEE 
-WHERE SALARY > 10000 
-AND SALARY < 40000;
-
-     EMPNO NAME                SALARY
----------- --------------- ----------
-       100 Wilson               17000
-       101 Smitha               25000
-       103 Roy                  35000
-       109 Alan                 30000
-       110 Tina                 18000
-       200 Karthika             29000
-       210 Rita                 36500
-       213 Manacy               16250
-       215 Deepa                27000
-       220 Soosan               28500
-
-10 rows selected.
-
-
-
--- 17. USE IN OPERATOR TO FIND NAME AND EMPNO OF EMPLOYEE WHO ARE ANALYST OR MANAGER ORDERED BY NAME.
-SELECT NAME , EMPNO 
-FROM EMPLOYEE 
-WHERE JOB IN ('ANLST' , 'MNGR');
-
-NAME                 EMPNO
---------------- ----------
-Roy                    103
-Watson                 105
-Alan                   109
-Karthika               200
-Rita                   210
-Deepa                  215
+------------------------------
+Basu Navindgi
+Ivan Bayross
+Pramada Jaguste
+Ravi Sreedharan
+Rukmini
+Vandana Saitwal
 
 6 rows selected.
 
+-- 19. SORT CONTENTS OF PURCHASE TABLE IN DESCENDING ORDER OF DATE
+ALTER TABLE PURCHASE 
+MODIFY ORDERDATE DATE;
 
--- 18. FIND THE EMPLOYEE NUMBER, NAME AND SALARY WHO BEEN PAID COMMISSION AND WHOSE SALARY IS GREATER THAN 30000.
-SELECT EMPNO , NAME , SALARY 
-FROM EMPLOYEE 
-WHERE COMM IS NOT NULL 
-AND SALARY >30000;
+Table altered.
 
-     EMPNO NAME                SALARY
----------- --------------- ----------
-       105 Watson               45000
+UPDATE PURCHASE SET ORDERDATE = '20-JAN-16' WHERE ORDER_NO = 'O00001';
 
+1 row updated.
 
--- 19. FIND DEP-NO ,DEP-NAME, SALARY, JOB, SEX ORDERED BY EMPNO WITHIN DEPARTMENT.
-SELECT D.DEP_NO, D.DEP_NAME, E.SALARY, E.JOB, E.SEX 
-FROM DEPARTMENT D 
-INNER JOIN EMPLOYEE E ON D.DEP_NO = E.DEP_NO 
-ORDER BY D.DEP_NO, E.EMPNO;
+UPDATE PURCHASE SET ORDERDATE = '27-JAN-16' WHERE ORDER_NO = 'O00002';
 
-    DEP_NO DEP_NAME            SALARY JOB             SEX
----------- --------------- ---------- --------------- ------
-        10 Accounting           17000 CLRK            M
-        10 Accounting           29000 MNGR            F
-        10 Accounting           16250 CLRK            F
-        30 Research             35000 ANLST           M
-        30 Research             45000 MNGR            M
-        40 Sales                25000 SLSM            F
-        40 Sales                30000 MNGR            M
-        50 Manufacturing        18000 CLRK            F
-        50 Manufacturing        36500 MNGR            F
-        60 Shipping              8250 DRVR            M
-        60 Shipping             27000 ANLST           F
+1 row updated.
 
-    DEP_NO DEP_NAME            SALARY JOB             SEX
----------- --------------- ---------- --------------- ------
-        60 Shipping             28500 SLSM            F
+UPDATE PURCHASE SET ORDERDATE = '20-FEB-16' WHERE ORDER_NO = 'O00003';
 
-12 rows selected.
+1 row updated.
 
--- 20. DISPLAY THE NAME OF EMPLOYEE AND DEPENDANT NAME IF DEPENDANT IS STAYING IN THE SAME LOCATION  WHERE EMPLOYEE IS WORKING.
-SELECT E.NAME, D.FNAME 
-FROM EMPLOYEE E 
-INNER JOIN DEPENDANT D ON E.EMPNO = D.EMPNO 
-INNER JOIN DEPARTMENT DEP ON E.DEP_NO = DEP.DEP_NO 
-WHERE D.PLACE = DEP.LOC;
+UPDATE PURCHASE SET ORDERDATE = '07-APR-16' WHERE ORDER_NO = 'O00004';
 
-NAME            FNAME
---------------- ---------------
-Simpson         Anu
+1 row updated.
 
+UPDATE PURCHASE SET ORDERDATE = '22-MAY-16' WHERE ORDER_NO = 'O00005';
 
--- 21. FIND COMPANY LOCATION OF EMPLOYEE NAMED WATSON.
-SELECT DEP.LOC 
-FROM EMPLOYEE E,DEPARTMENT DEP 
-WHERE E.NAME = 'Watson' 
-AND E.DEP_NO = DEP.DEP_NO; 
+1 row updated.
 
-LOC
----------------
-Cochin
+UPDATE PURCHASE SET ORDERDATE = '26-MAY-16' WHERE ORDER_NO = 'O00006';
 
+1 row updated.
 
+SELECT * 
+FROM PURCHASE 
+ORDER BY ORDERDATE DESC;
 
--- 22. FIND NAME, EMPNO,DEP-NAME FOR ALL EMPLOYEE WHO WORK IN ‘TRICHUR’ AND ORDER BY EMPNO IN DESCENDING ORDER.
-SELECT E.NAME, E.EMPNO, DEP.DEP_NAME 
-FROM EMPLOYEE E, DEPARTMENT DEP 
-WHERE E.DEP_NO = DEP.DEP_NO 
-AND DEP.LOC = 'Trichur' 
-ORDER BY E.EMPNO DESC;
-
-NAME                 EMPNO DEP_NAME
---------------- ---------- ---------------
-Alan                   109 Sales
-Smitha                 101 Sales
-
-
--- 23. RETRIEVE NAME AND SALARY OF ALL EMPLOYEE WHO EARNED MORE THAN AVERAGE SALARY.
-SELECT NAME, SALARY FROM EMPLOYEE 
-WHERE SALARY > 
-(
-  SELECT AVG(SALARY) 
-  FROM EMPLOYEE
-);
-
-NAME                SALARY
---------------- ----------
-Roy                  35000
-Watson               45000
-Alan                 30000
-Karthika             29000
-Rita                 36500
-Deepa                27000
-Soosan               28500
-
-7 rows selected.
-
-
--- 24. FIND THE EMPNAME,DEP,NAME OF ALL MANAGER ORDER BY DEPARTMENT NAME.
-SELECT E.NAME , D.DEP_NAME 
-FROM EMPLOYEE E 
-INNER JOIN DEPARTMENT D ON E.DEP_NO = D.DEP_NO 
-WHERE E.JOB = 'MNGR' 
-ORDER BY D.DEP_NAME;
-
-NAME            DEP_NAME
---------------- ---------------
-Karthika        Accounting
-Rita            Manufacturing
-Watson          Research
-Alan            Sales
-
-
--- 25. FIND NAME AND DEP-NAME OF EMPLOYEE WHO EARNS HIGHEST SALARY.
-SELECT E.NAME , D.DEP_NAME 
-FROM EMPLOYEE E 
-INNER JOIN DEPARTMENT D ON E.DEP_NO = D.DEP_NO 
-WHERE E.SALARY = 
-(
-  SELECT MAX(SALARY) 
-  FROM EMPLOYEE
-);
-
-NAME            DEP_NAME
---------------- ---------------
-Watson          Research
-
--- 26. FIND NAME, DEPARTMENT NAME, COMMISSION OF ALL EMPLOYEE WHO PAID COMMISSION ORDER BY NAME. 
-SELECT E.NAME , D.DEP_NAME , E.COMM 
-FROM EMPLOYEE E 
-INNER JOIN DEPARTMENT D ON E.DEP_NO = D.DEP_NO 
-WHERE E.COMM IS NOT NULL 
-ORDER BY E.NAME;
-
-NAME            DEP_NAME        COMM
---------------- --------------- ---------------
-Alan            Sales           8000
-Smitha          Sales           1300
-Soosan          Shipping        5300
-Watson          Research        0
-
-
-
--- 27. DISPLAY EMPLOYEE NAME AND DEPARTMENT NAME OF ALL EMPLOYEES WORKING IN DEPARTMENTS THAT HAS AT LEAST THREE EMPLOYEES. ORDER THE OUTPUT IN ALPHABETICAL ORDER FIRST BY DEPARTMENT NAME AND THEN BY EMPLOYEE NAME. 
-SELECT E.NAME, D.DEP_NAME 
-FROM EMPLOYEE E 
-INNER JOIN DEPARTMENT D ON E.DEP_NO = D.DEP_NO 
-WHERE D.DEP_NO IN 
-( 
-  SELECT DEP_NO 
-  FROM EMPLOYEE 
-  GROUP BY DEP_NO 
-  HAVING COUNT(*) >= 3
-)
-ORDER BY D.DEP_NAME, E.NAME;
-
-NAME            DEP_NAME
---------------- ---------------
-Karthika        Accounting
-Manacy          Accounting
-Wilson          Accounting
-Deepa           Shipping
-Simpson         Shipping
-Soosan          Shipping
+ORDER_NO        CUSTNO          PRONO             QUANTITY ORDERDATE
+--------------- --------------- --------------- ---------- ------------------
+O00006          C00005          P00004                   1 26-MAY-16
+O00005          C00004          P00002                   2 22-MAY-16
+O00004          C00003          P00008                   4 07-APR-16
+O00003          C00006          P00001                   3 20-FEB-16
+O00002          C00003          P00008                   1 27-JAN-16
+O00001          C00002          P00003                   2 20-JAN-16
 
 6 rows selected.
 
+-- 20. DELETE THE PRODUCT WITH PRODUCT_NO = P00003 
+ALTER TABLE PURCHASE 
+MODIFY PRONO VARCHAR(15) NULL;
 
--- 28. FIND NAME, DEPARTMENT NAME AND COMMISSION OF ALL EMPLOYEES WHO NOT PAID COMMISSION ORDER BY NAME.
-SELECT E.NAME , D.DEP_NAME , E.COMM 
-FROM EMPLOYEE E 
-INNER JOIN DEPARTMENT D ON E.DEP_NO = D.DEP_NO 
-WHERE E.COMM IS NULL 
-ORDER BY E.NAME; 
+Table altered.
 
-NAME            DEP_NAME        COMM
---------------- --------------- ---------------
-Deepa           Shipping
-Karthika        Accounting
-Manacy          Accounting
-Rita            Manufacturing
-Roy             Research
-Simpson         Shipping
-Tina            Manufacturing
-Wilson          Accounting
+UPDATE PURCHASE SET PRONO=NULL WHERE PRONO='P00003';
 
-8 rows selected.
+1 row updated.
 
-
-
--- 29. LIST NAME AND SALARY OF ALL EMPLOYEE IN DEPARTMENT NUMBER 10 AND 30.
-SELECT NAME , SALARY 
-FROM EMPLOYEE 
-WHERE DEP_NO IN (10,30);
-
-NAME                SALARY
---------------- ----------
-Wilson               17000
-Roy                  35000
-Watson               45000
-Karthika             29000
-Manacy               16250
-
-
-
--- 30. LIST JOBS OF EMPLOYEES IN DEPARTMENT 30 WHICH ARE NOT DONE IN DEPARTMENT 40.
-SELECT DISTINCT JOB 
-FROM EMPLOYEE 
-WHERE DEP_NO = 30 
-EXCEPT SELECT DISTINCT JOB 
-FROM EMPLOYEE  
-WHERE DEP_NO = 40;
-
-JOB
----------------
-ANLST
-
-
--- 31. LIST OUT JOB AND SALARY OF EMPLOYEES IN DEPARTMENT 10 AND 40 WHO DRAW THE SAME SALARY  (RESULT- NO RECORD FOUND). 
-SELECT E1.JOB, E2.SALARY 
-FROM EMPLOYEE E1 
-JOIN EMPLOYEE E2 ON E1.SALARY=E2.SALARY 
-WHERE E1.DEP_NO = 10 
-AND E2.DEP_NO = 40;
-
-no rows selected
-
-
--- 32. CREATE A VIEW TO DISPLAY EMPNO' NAME ' JOB OF EMPLOYEE FROM EMPLOYEE TABLE WHO WORKS AS MANAGER.
-CREATE VIEW MANAGER AS 
-SELECT EMPNO , NAME , JOB 
-FROM EMPLOYEE 
-WHERE JOB = 'MNGR';
-
-View created.
-
-SELECT * FROM MANAGER;
-
-     EMPNO NAME            JOB
----------- --------------- ---------------
-       105 Watson          MNGR
-       109 Alan            MNGR
-       200 Karthika        MNGR
-       210 Rita            MNGR
-
-
--- 33. SELECT EMPNO, NAME,JOB AND SALARY OF EMPLOYEE WHO WORKS AS CLERK AND HAVING SALARY GREATER THAN 1650.
-SELECT EMPNO , NAME , JOB , SALARY 
-FROM EMPLOYEE 
-WHERE JOB = 'CLERK' 
-AND SALARY > 1650;
-
-     EMPNO NAME            JOB                 SALARY
----------- --------------- --------------- ----------
-       100 Wilson          CLRK                 17000
-       110 Tina            CLRK                 18000
-       213 Manacy          CLRK                 16250
-
-
--- 34. CREATE AN INDEX FOR COLUMN FNAME AND LNAME IN DEPENDANT  TABLE.
-CREATE INDEX DEPENDANT_NAME ON 
-DEPENDANT (FNAME , LNAME);
-
-Index created.
-
-SELECT INDEX_NAME, TABLE_NAME 
-FROM ALL_INDEXES 
-WHERE TABLE_NAME = 'DEPENDANT';
-
-INDEX_NAME
--------------------------------------------------------------------------------- 
-TABLE_NAME
--------------------------------------------------------------------------------- 
-SYS_C008354
-DEPENDANT
-
-DEPENDANT_NAME
-DEPENDANT
-
-
--- 35. DELETE PERSON WITH ID=1031 IN DEPENDANT TABLE. 
-DELETE FROM DEPENDANT 
-WHERE PID = 1031;
+DELETE FROM PRODUCT 
+WHERE PRODUCT_NO='P00003';
 
 1 row deleted.
 
-SELECT * FROM DEPENDANT;
+-- 21. COPY THE CONTENTS OF FIELD ORDER_NO AND ORDERDATE OF PURCHASE TABLE INTO NEW TABLE. 
+CREATE TABLE ORDERS AS 
+SELECT ORDER_NO,ORDERDATE 
+FROM PURCHASE;
 
-       PID FNAME           LNAME           PLACE                EMPNO
----------- --------------- --------------- --------------- ----------
-      1010 Anu             Jose            Trivandrum             214
-      1020 Neenu           Thomas          Kollam                 200
-      1022 AnamikA         Thampi          Kollam                 200
+Table created.
+
+-- 22. DELETE THE NEWLY CREATED TABLE. 
+DROP TABLE ORDERS;
+
+Table dropped.
+
+-- 23. CREATE VIEW OF CUSTOMER TABLE. 
+CREATE VIEW CUST_VIEW AS 
+SELECT * 
+FROM CUSTOMER;
+
+View created.
+
+-- 24. LIST NAMES OF CUSTOMERS WHO HAVE PLACED MORE THAN ONE ORDER.
+SELECT C.NAME FROM CUSTOMER C 
+INNER JOIN PURCHASE P ON C.CUST_NO = P.CUSTNO 
+GROUP BY C.CUST_NO, C.NAME 
+HAVING COUNT(*) > 1;
+
+NAME
+------------------------------
+Pramada Jaguste
 
 
--- 36. RETURN EMPNO,NAME AND SALARY OF ANY ONE  OF THE FEMALES IN DEPARTMENT 10. 
+-- 25. RETRIEVE TRANSACTION DETAILS OF CUSTOMER WHO LIVES IN SAME CITY, OBTAIN THE RESULT THROUGH SELF -JOIN AND CORRELATED JOIN.
+SELECT C1.NAME AS CUSTOMER1, C2.NAME AS CUSTOMER2, P.ORDER_NO, P.ORDERDATE 
+FROM CUSTOMER C1 
+INNER JOIN CUSTOMER C2 ON C1.CITY = C2.CITY 
+AND C1.CUST_NO <> C2.CUST_NO 
+INNER JOIN PURCHASE P ON C1.CUST_NO = P.CUSTNO 
+ORDER BY C1.NAME, C2.NAME;
 
-SELECT EMPNO, NAME, SALARY 
-FROM EMPLOYEE 
-WHERE DEP_NO = 10 
-AND SEX = 'F' 
-AND ROWNUM = 1;
+CUSTOMER1                      CUSTOMER2                      ORDER_NO
+------------------------------ ------------------------------ ---------------
+ORDERDATE
+---------
+Basu Navindgi                  Ivan Bayross                   O00005
+22-MAY-16
 
-     EMPNO NAME                SALARY
----------- --------------- ----------
-       200 Karthika             29000
+Basu Navindgi                  Pramada Jaguste           
+     O00005
+22-MAY-16
+     O00004
+07-APR-16
 
 
--- 37. DELETE THE EMPLOYEE KARTHIKA WITH ALL HER DEPENDANTS.
-DELETE FROM DEPENDANT 
-WHERE EMPNO IN 
-(
-  SELECT EMPNO 
-  FROM EMPLOYEE 
-  WHERE NAME = 'Karthika'
-);
+CUSTOMER1                      CUSTOMER2                      ORDER_NO
+------------------------------ ------------------------------ ---------------
+ORDERDATE
+---------
+Pramada Jaguste                Basu Navindgi                  O00002
+27-JAN-16
 
-2 rows deleted.
+Pramada Jaguste                Ivan Bayross                   O00002
+27-JAN-16
 
-SELECT * FROM DEPENDANT;
+Pramada Jaguste                Ivan Bayross                   O00004
+07-APR-16
 
-       PID FNAME           LNAME           PLACE                EMPNO
----------- --------------- --------------- --------------- ----------
-      1010 Anu             Jose            Trivandrum             214
+
+CUSTOMER1                      CUSTOMER2                      ORDER_NO
+------------------------------ ------------------------------ ---------------
+ORDERDATE
+---------
+Rukmini                        Vandana Saitwal                O00003
+20-FEB-16
+
+Vandana Saitwal                Rukmini                        O00001
+20-JAN-16
+
+
+8 rows selected.
+
+--26. RETRIEVE CUSTOMER NAMES STARTING WITH ‘R’.
+SELECT NAME 
+FROM CUSTOMER 
+WHERE NAME LIKE 'R%';  
+
+NAME
+------------------------------
+Ravi Sreedharan
+Rukmini
+
+--27. LIST NAMES OF PERSONS WHO ARE EITHER A SUPPLIER OR A CUSTOMER
+SELECT NAME 
+FROM CUSTOMER 
+UNION 
+SELECT SNAME 
+FROM SUPPLIER;
+
+NAME
+------------------------------
+Ivan Bayross
+Vandana Saitwal
+Pramada Jaguste
+Basu Navindgi
+Ravi Sreedharan
+Rukmini
+Nirmala Agarwal
+Susmitha
+Nanda Gopal
+
+9 rows selected.
