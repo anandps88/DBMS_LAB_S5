@@ -1,158 +1,89 @@
--- EXPERIMENT 13 - RAILWAY RESERVATION
+-- EXPERIMENT 13 A - RAILWAY RESERVATION : COMMIT & ROLLBACK 
 
 -- NAME : MILAN GEORGE MATHEW
 -- ROLL NO : 39
 -- DATE : 01/10/2024
 
 -- AIM
--- A) PERFORM COMMIT AND ROLLBACK OPERATIONS IN THE TRAIN TABLE. THE TRAIN NUMBER SHOULD BE AUTOMATICALLY INCREMENTED FOR EACH ROW INSERTION
+-- PERFORM COMMIT AND ROLLBACK OPERATIONS IN THE TRAIN TABLE. THE TRAIN NUMBER SHOULD BE AUTOMATICALLY INCREMENTED FOR EACH ROW INSERTION
 -- TRAIN(TNO,TNAME,TDATE,DESTINATION,SEATS)
--- B) WRITE A PL/SQL PROGRAM TO IMPLEMENT THE RAILWAY RESERVATION SYSTEM WITH PROCEDURE FOR RESERVATION AND CANCELLATION
 ----------------------------------------------------------------
 
 ----------------------------------------------------------------
 
---TABLE DESIGN
-CREATE TABLE Train (
-  TNO NUMBER PRIMARY KEY,
-  Tname VARCHAR2(20),
-  TDate DATE,
-  Destination VARCHAR2(20),
-  Seats NUMBER
+-- TABLE CREATION
+CREATE  TABLE Train (
+    TrainNo NUMBER PRIMARY KEY,
+    TName VARCHAR(15),
+    TDate DATE,
+    Destination VARCHAR(15),
+    Seats NUMBER
 );
 
-CREATE SEQUENCE TrainSeq
+
+CREATE SEQUENCE TrainNo_seq
 START WITH 1
 INCREMENT BY 1;
 
-INSERT INTO Train (TNO, Tname, TDate, Destination, Seats)
-VALUES (TrainSeq.NEXTVAL, 'Express1', TO_DATE('15-OCT-2024', 'DD-MON-YYYY'), 'City A', 200);
-
-INSERT INTO Train (TNO, Tname, TDate, Destination, Seats)
-VALUES (TrainSeq.NEXTVAL, 'Express2', TO_DATE('01-NOV-2024', 'DD-MON-YYYY'), 'City B', 150);
-
-INSERT INTO Train (TNO, Tname, TDate, Destination, Seats)
-VALUES (TrainSeq.NEXTVAL, 'Express3', TO_DATE('05-DEC-2024', 'DD-MON-YYYY'), 'Mountain Town', 120);
-
-INSERT INTO Train (TNO, Tname, TDate, Destination, Seats)
-VALUES (TrainSeq.NEXTVAL, 'Express4', TO_DATE('20-OCT-2024', 'DD-MON-YYYY'), 'Coastal City', 180);
-
-INSERT INTO Train (TNO, Tname, TDate, Destination, Seats)
-VALUES (TrainSeq.NEXTVAL, 'Express5', TO_DATE('15-NOV-2024', 'DD-MON-YYYY'), 'City C', 250);
-
-
-INSERT INTO Train (TNO, Tname, TDate, Destination, Seats)
-VALUES (TrainSeq.NEXTVAL, 'Express6', TO_DATE('10-JAN-2025', 'DD-MON-YYYY'), 'City D', 300);
-
-INSERT INTO Train (TNO, Tname, TDate, Destination, Seats)
-VALUES (TrainSeq.NEXTVAL, 'Express7', TO_DATE('25-FEB-2025', 'DD-MON-YYYY'), 'City E', 220);
-
 ----------------------------------------------------------------
 
---PROGRAM
-
--- PROCEDURE RESERVATION
-CREATE OR REPLACE PROCEDURE ReserveTicket (
-    P_train_number IN INT,
-    p_seats_needed IN INT
-) AS
-    v_available_seats INT;
+-- TRIGGER CREATION
+CREATE OR REPLACE TRIGGER TrainNo_trigger
+BEFORE INSERT ON Train
+FOR EACH ROW
 BEGIN
--- Check available seats for the specified train number
-    SELECT Seats INTO v_available_seats
-    FROM Train
-    WHERE TNO = P_train_number;
-
-    -- If seats are available, reserve them
-    IF v_available_seats >= p_seats_needed THEN
-        UPDATE Train
-        SET Seats = Seats - p_seats_needed
-        WHERE TNO = P_train_number;
-        
-        COMMIT;
-
-        DBMS_OUTPUT.PUT_LINE(p_seats_needed || ' seats reserved successfully.');
-    ELSE
-        DBMS_OUTPUT.PUT_LINE('Sorry, not enough seats available.');
-    END IF;
-
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('Invalid train number');
-END ReserveTicket;
-/
--- PROCEDURE CANCELLATION
-CREATE OR REPLACE PROCEDURE CancelTicket (
-    p_train_number IN INT,
-    p_seats_cancel IN INT
-) AS
-BEGIN
-    -- Update the Seats column by adding the cancelled seats
-    UPDATE Train
-    SET Seats = Seats + p_seats_cancel
-    WHERE TNO = p_train_number;
-
-    -- Check if any rows were updated
-    IF SQL%ROWCOUNT = 0 THEN
-        DBMS_OUTPUT.PUT_LINE('Invalid train number');
-    ELSE
-        COMMIT;  -- Commit the changes only if the update was successful
-        DBMS_OUTPUT.PUT_LINE(p_seats_cancel || ' seats cancelled successfully');
-    END IF;
-
-EXCEPTION
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
-END CancelTicket;
-/
-
-
-SET SERVEROUTPUT ON;
-
-BEGIN
-    DBMS_OUTPUT.PUT_LINE('1. TICKET RESERVATION');
-    DBMS_OUTPUT.PUT_LINE('2. TICKET CANCELLATION');
+    SELECT TrainNo_seq.NEXTVAL INTO :NEW.TrainNo FROM dual;
 END;
 /
+Trigger created.
 
-DECLARE
-    train_no INT := &train_number;   
-    seat_need INT := &seats_needed;   
-    ch INT := &choice;                
-BEGIN
-    IF ch = 1 THEN
-        ReserveTicket(train_no, seat_need);
-    ELSIF ch = 2 THEN
-        CancelTicket(train_no, seat_need);
-    ELSE
-        DBMS_OUTPUT.PUT_LINE('Invalid choice. Please enter 1 for reservation or 2 for cancellation.');
-    END IF;
-END;
-/
-
-----------------------------------------
-
---OUTPUT
-Procedure created.
+-----------------------------------------------------------------
 
 
-Procedure created.
+INSERT INTO Train (TName, TDate, Destination, Seats) VALUES ('Express', TO_DATE('2023-10-01', 'YYYY-MM-DD'), 'Delhi', 100);
+COMMIT;
+INSERT INTO Train (TName, TDate, Destination, Seats) VALUES ('Nirvana', TO_DATE('2023-10-02', 'YYYY-MM-DD'), 'Doha', 150);
 
-1. TICKET RESERVATION
-2. TICKET CANCELLATION
 
-PL/SQL procedure successfully completed.
+INSERT INTO Train (TName, TDate, Destination, Seats) VALUES ('Gaadi', TO_DATE('2023-10-02', 'YYYY-MM-DD'), 'Shimla', 150);
+ROLLBACK;
 
-Enter value for train_number: 1
-old   2:     train_no INT := &train_number;
-new   2:     train_no INT := 1;
-Enter value for seats_needed: 4
-old   3:     seat_need INT := &seats_needed;
-new   3:     seat_need INT := 4;
-Enter value for choice: 1
-old   4:     ch INT := &choice;
-new   4:     ch INT := 1;
-4 seats reserved successfully.
 
-PL/SQL procedure successfully completed.
----------------------------------------------------
+SELECT * FROM Train;
+
+
+
+SQL> INSERT INTO Train (TName, TDate, Destination, Seats) VALUES ('Express', TO_DATE('2023-10-01', 'YYYY-MM-DD'), 'Delhi', 100);
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> INSERT INTO Train (TName, TDate, Destination, Seats) VALUES ('Nirvana', TO_DATE('2023-10-02', 'YYYY-MM-DD'), 'Doha', 150);
+
+1 row created.
+
+SQL> SELECT * FROM Train;
+
+   TRAINNO TNAME           TDATE              DESTINATION          SEATS
+---------- --------------- ------------------ --------------- ----------
+         4 Express         01-OCT-23          Delhi                  100
+         5 Nirvana         02-OCT-23          Doha                   150
+
+SQL> INSERT INTO Train (TName, TDate, Destination, Seats) VALUES ('Gaadi', TO_DATE('2023-10-02', 'YYYY-MM-DD'), 'Shimla', 150);
+
+1 row created.
+
+SQL> SELECT * FROM Train;
+
+   TRAINNO TNAME           TDATE              DESTINATION          SEATS
+---------- --------------- ------------------ --------------- ----------
+         4 Express         01-OCT-23          Delhi                  100
+         5 Nirvana         02-OCT-23          Doha                   150
+         6 Gaadi           02-OCT-23          Shimla                 150
+
+SQL> ROLLBACK;
+
+Rollback complete.
