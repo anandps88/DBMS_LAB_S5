@@ -49,6 +49,7 @@ DECLARE
             RETURN Category;
         END IF;
     END;
+    
 BEGIN
 
     FOR customer_rec IN (SELECT CID, bal, Category FROM customer_account) LOOP
