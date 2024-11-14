@@ -52,7 +52,7 @@ DECLARE
     
 BEGIN
 
-    FOR customer_rec IN (SELECT CID, bal, Category FROM customer_account) LOOP
+    FOR customer_rec IN (SELECT CID, bal FROM customer_account) LOOP
         DBMS_OUTPUT.PUT_LINE('CID: ' || customer_rec.CID ||', bal: '||customer_rec.bal ||', Category: ' || categorize_customer(customer_rec.CID,customer_rec.bal));
     END LOOP;
 
